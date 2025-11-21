@@ -1,7 +1,7 @@
 package com.leinterview.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -16,11 +16,15 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 @Service
-@Slf4j
-@RequiredArgsConstructor
 public class InterviewService {
 
+    private static final Logger log = LoggerFactory.getLogger(InterviewService.class);
+
     private final GeminiService geminiService;
+
+    public InterviewService(GeminiService geminiService) {
+        this.geminiService = geminiService;
+    }
 
     private final BlockingQueue<String> transcriptionQueue = new LinkedBlockingQueue<>();
     private final BlockingQueue<String> responseQueue = new LinkedBlockingQueue<>();

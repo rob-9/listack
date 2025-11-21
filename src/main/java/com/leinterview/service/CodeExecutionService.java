@@ -1,6 +1,7 @@
 package com.leinterview.service;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -12,8 +13,9 @@ import java.nio.file.StandardOpenOption;
 import java.util.concurrent.TimeUnit;
 
 @Service
-@Slf4j
 public class CodeExecutionService {
+
+    private static final Logger log = LoggerFactory.getLogger(CodeExecutionService.class);
 
     private static final int TIMEOUT_SECONDS = 10;
 
