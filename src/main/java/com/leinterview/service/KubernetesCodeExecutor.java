@@ -7,7 +7,8 @@ import io.kubernetes.client.openapi.apis.BatchV1Api;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.models.*;
 import io.kubernetes.client.util.Config;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +20,9 @@ import java.util.Map;
 import java.util.UUID;
 
 @Service
-@Slf4j
 public class KubernetesCodeExecutor {
+
+    private static final Logger log = LoggerFactory.getLogger(KubernetesCodeExecutor.class);
 
     @Value("${kubernetes.namespace:interview-platform}")
     private String namespace;
@@ -202,8 +204,20 @@ public class KubernetesCodeExecutor {
     private String getJobLogs(String jobName) {
         try {
             String labelSelector = "job-name=" + jobName;
-            V1PodList podList = coreApi.listNamespacedPod(namespace, null, null, null, null,
-                    labelSelector, null, null, null, null, null);
+            V1PodList podList = coreApi.listNamespacedPod(
+                    namespace,           // namespace
+                    null,               // pretty
+                    null,               // allowWatchBookmarks
+                    null,               // _continue
+                    null,               // fieldSelector
+                    labelSelector,      // labelSelector
+                    null,               // limit
+                    null,               // resourceVersion
+                    null,               // resourceVersionMatch
+                    null,               // sendInitialEvents
+                    null,               // timeoutSeconds
+                    null                // watch
+            );
 
             if (podList.getItems().isEmpty()) {
                 return "No pods found for job";
@@ -238,8 +252,20 @@ public class KubernetesCodeExecutor {
 
         try {
             String labelSelector = "role=code-executor";
-            V1JobList jobList = batchApi.listNamespacedJob(namespace, null, null, null, null,
-                    labelSelector, null, null, null, null, null);
+            V1JobList jobList = batchApi.listNamespacedJob(
+                    namespace,           // namespace
+                    null,               // pretty
+                    null,               // allowWatchBookmarks
+                    null,               // _continue
+                    null,               // fieldSelector
+                    labelSelector,      // labelSelector
+                    null,               // limit
+                    null,               // resourceVersion
+                    null,               // resourceVersionMatch
+                    null,               // sendInitialEvents
+                    null,               // timeoutSeconds
+                    null                // watch
+            );
 
             return (int) jobList.getItems().stream()
                     .filter(job -> job.getStatus() != null && job.getStatus().getActive() != null && job.getStatus().getActive() > 0)
@@ -257,8 +283,20 @@ public class KubernetesCodeExecutor {
 
         try {
             String labelSelector = "role=code-executor";
-            V1JobList jobList = batchApi.listNamespacedJob(namespace, null, null, null, null,
-                    labelSelector, null, null, null, null, null);
+            V1JobList jobList = batchApi.listNamespacedJob(
+                    namespace,           // namespace
+                    null,               // pretty
+                    null,               // allowWatchBookmarks
+                    null,               // _continue
+                    null,               // fieldSelector
+                    labelSelector,      // labelSelector
+                    null,               // limit
+                    null,               // resourceVersion
+                    null,               // resourceVersionMatch
+                    null,               // sendInitialEvents
+                    null,               // timeoutSeconds
+                    null                // watch
+            );
 
             OffsetDateTime now = OffsetDateTime.now();
 
