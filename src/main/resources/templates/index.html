@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeInterview</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 600px;
+            padding: 2rem;
+        }
+
+        .logo {
+            font-size: 4rem;
+            font-weight: 300;
+            margin-bottom: 1rem;
+            color: #fff;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #888;
+            margin-bottom: 3rem;
+            font-weight: 300;
+        }
+
+        .form-container {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease 0.3s forwards;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 400;
+            color: #ccc;
+            text-align: left;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid #333;
+            border-radius: 8px;
+            background: #1a1a1a;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        input::placeholder {
+            color: #666;
+        }
+
+        input:focus, select:focus {
+            border-color: #fff;
+            background: #222;
+        }
+
+        select option {
+            background: #1a1a1a;
+            color: #fff;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            background: #fff;
+            color: #000;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .submit-btn:hover {
+            background: #f0f0f0;
+            transform: translateY(-1px);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .features {
+            margin-top: 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.8s ease 0.6s forwards;
+        }
+
+        .feature {
+            margin-bottom: 0.5rem;
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 300;
+        }
+
+        .feature::before {
+            content: "→";
+            color: #fff;
+            font-weight: normal;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">LeInterview</div>
+        <div class="subtitle" id="subtitle">AI-powered interview practice</div>
+        
+        <div class="form-container">
+            <form id="interviewForm">
+                <div class="input-group">
+                    <label for="company-name">Target Company</label>
+                    <input type="text" id="company-name" name="company-name" placeholder="Google, Microsoft, Amazon..." required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="interview-type">Interview Type</label>
+                    <select id="interview-type" name="interview-type" required>
+                        <option value="">Select interview type</option>
+                        <option value="behavioral">Behavioral Interview</option>
+                        <option value="technical">Technical Interview</option>
+                        <option value="system-design">System Design</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="submit-btn">Start Interview</button>
+            </form>
+            
+            <div class="features">
+                <div class="feature">Real-time AI feedback</div>
+                <div class="feature">Code execution environment</div>
+                <div class="feature">Company-specific questions</div>
+                <div class="feature">Speech recognition & analysis</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('interviewForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const companyName = document.getElementById('company-name').value.toLowerCase().trim();
+            const interviewType = document.getElementById('interview-type').value;
+            
+            if (companyName && interviewType) {
+                localStorage.setItem('companyName', companyName);
+                localStorage.setItem('interviewType', interviewType);
+                window.location.href = '/interview';
+            }
+        });
+
+        // No additional typing animation needed
+    </script>
+</body>
+</html>

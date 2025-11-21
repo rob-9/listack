@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interview Page</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Add CodeMirror CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.0/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.0/theme/dracula.min.css">
+  <!-- Add Font Awesome for expand icon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <!-- Add Marked.js for markdown parsing -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
+  <style>
+    /* Your existing CSS styles */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+    /* General Styles */
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      font-family: 'Inter', sans-serif;
+      color: #fff;
+      background: #0a0a0a;
+      overflow: hidden;
+    }
+
+    .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      width: 100%;
+      height: 100vh;
+      padding: clamp(0.5rem, 1.5vw, 1rem);
+      margin: 0;
+      box-sizing: border-box;
+      gap: clamp(0.5rem, 1.5vw, 1rem);
+      overflow: hidden;
+    }
+
+    /* Left Section: LeBron Image and Feedback Box */
+    .left-section {
+      flex: 0 0 35%;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      justify-content: space-between;
+      align-items: center;
+      min-width: 300px;
+    }
+
+    .left-section h1 {
+      margin: 0;
+      font-size: 2.5rem;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    #lebron-picture {
+      width: 100%;
+      max-width: 400px;
+      height: auto;
+      aspect-ratio: 16/9;
+      border-radius: 8px;
+      border: 1px solid #333;
+      transition: all 0.3s ease;
+      object-fit: cover;
+    }
+
+    #lebron-picture:hover {
+      border-color: #fff;
+    }
+
+    #videoElement {
+      width: 100%;
+      max-width: 400px;
+      height: auto;
+      aspect-ratio: 16/9;
+      border-radius: 8px;
+      border: 1px solid #333;
+      transition: all 0.3s ease;
+      display: none;
+      object-fit: cover;
+    }
+
+    #videoElement:hover {
+      border-color: #fff;
+    }
+
+    .feedback-box {
+      width: 100%;
+      flex: 1;
+      background-color: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+      position: relative;
+      margin-top: 1rem;
+    }
+
+    .feedback-box:hover {
+      border-color: #fff;
+    }
+
+    .text-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .text-section h3 {
+      margin: 0;
+      font-size: 1.1rem;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+    }
+
+    #feedback-text {
+      width: 100%;
+      flex: 1;
+      padding: 15px;
+      font-size: 16px;
+      border: 1px solid #555;
+      border-radius: 8px;
+      box-sizing: border-box;
+      background-color: #444;
+      color: #fff;
+      min-height: 200px;
+      overflow-y: auto;
+      line-height: 1.5;
+    }
+
+    #feedback-text h1, #feedback-text h2, #feedback-text h3 {
+      color: #FDB927;
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+
+    #feedback-text h1 { font-size: 1.3em; }
+    #feedback-text h2 { font-size: 1.2em; }
+    #feedback-text h3 { font-size: 1.1em; }
+
+    #feedback-text p {
+      margin-bottom: 10px;
+    }
+
+    #feedback-text strong {
+      color: #8B4FFB;
+      font-weight: 600;
+    }
+
+    #feedback-text code {
+      background-color: #333;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: "Courier New", monospace;
+      font-size: 14px;
+      color: #FDB927;
+    }
+
+    #feedback-text em {
+      color: #ccc;
+      font-style: italic;
+    }
+
+    .feedback-button {
+      padding: clamp(6px, 1.5vw, 8px) clamp(10px, 2.5vw, 14px);
+      background: #F5E6A3;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      font-size: clamp(12px, 2vw, 14px);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .feedback-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transition: left 0.5s;
+    }
+
+    .feedback-button:hover {
+      background: #E6D080;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    }
+
+    .feedback-button:hover::before {
+      left: 100%;
+    }
+
+    .feedback-button:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: clamp(6px, 1.5vw, 8px);
+      margin-top: 8px;
+      align-items: center;
+    }
+
+    .toggle-label {
+      font-size: clamp(14px, 2.5vw, 16px);
+      color: #ccc;
+      margin-right: clamp(8px, 2vw, 10px);
+      white-space: nowrap;
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: clamp(50px, 8vw, 60px);
+      height: clamp(28px, 5vw, 34px);
+      flex-shrink: 0;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #444;
+      border: 1px solid #555;
+      transition: all 0.3s ease;
+      border-radius: 50px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .slider:hover {
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.3), 0 0 8px rgba(255,255,255,0.1);
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: calc(100% - 6px);
+      width: calc(50% - 4px);
+      left: 2px;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: #fff;
+      transition: all 0.3s ease;
+      border-radius: 15px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    input:checked + .slider {
+      background-color: #8B4FFB;
+      border-color: #7B3FEB;
+    }
+
+    input:checked + .slider:before {
+      background-color: #fff;
+      transform: translate(calc(100% + 2px), -50%);
+    }
+
+    .return-home-button {
+      background: linear-gradient(135deg, #333 0%, #444 100%) !important;
+      color: #fff !important;
+      margin-left: auto;
+      border: 1px solid #555;
+    }
+
+    .return-home-button::before {
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent) !important;
+    }
+
+    .return-home-button:hover {
+      background: linear-gradient(135deg, #444 0%, #555 100%) !important;
+      border-color: #666;
+    }
+
+    /* Right Section: Question Box and Code Editor */
+    .right-section {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(0.5rem, 1.5vw, 1rem);
+      min-width: 300px;
+      max-width: calc(100vw - 350px);
+      overflow: hidden;
+    }
+
+    .question-box {
+      width: 100%;
+      flex: 0 0 35%;
+      background-color: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 8px;  
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+      position: relative;
+      min-height: 300px;
+      max-height: 35vh;
+      overflow: hidden;
+    }
+
+    .question-box:hover {
+      border-color: #fff;
+    }
+
+    .question-box h3 {
+      margin: 0;
+      font-size: 1.1rem;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+    }
+
+    #question-text {
+      width: 100%;
+      flex: 1;
+      padding: 15px;
+      font-size: 16px;
+      border: 1px solid #555;
+      border-radius: 8px;
+      box-sizing: border-box;
+      background-color: #444;
+      color: #fff;
+      margin-top: 16px;
+      overflow-y: auto;
+      line-height: 1.5;
+      min-height: 200px;
+    }
+
+    #question-text h1, #question-text h2, #question-text h3 {
+      color: #FDB927;
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+
+    #question-text h1 { font-size: 1.5em; }
+    #question-text h2 { font-size: 1.3em; }
+    #question-text h3 { font-size: 1.1em; }
+
+    #question-text p {
+      margin-bottom: 10px;
+    }
+
+    #question-text strong {
+      color: #8B4FFB;
+      font-weight: 600;
+    }
+
+    #question-text code {
+      background-color: #333;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: "Courier New", monospace;
+      font-size: 14px;
+      color: #FDB927;
+    }
+
+    #question-text pre {
+      background-color: #333;
+      padding: 10px;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin: 10px 0;
+    }
+
+    #question-text pre code {
+      background: none;
+      padding: 0;
+      color: #fff;
+    }
+
+    #question-text ul, #question-text ol {
+      margin-left: 20px;
+      margin-bottom: 10px;
+    }
+
+    #question-text li {
+      margin-bottom: 5px;
+    }
+
+    .code-block {
+      width: 100%;
+      flex: 1;
+      background-color: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+      position: relative;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .code-block:hover {
+      border-color: #fff;
+    }
+
+    .code-block h3 {
+      margin: 0;
+      font-size: 1.1rem;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+    }
+
+    .language-selector {
+      display: flex;
+      gap: 10px;
+      margin: 10px 0;
+    }
+
+    .language-selector button {
+      padding: clamp(8px, 2vw, 10px) clamp(12px, 3vw, 15px);
+      background: linear-gradient(135deg, #444 0%, #555 100%);
+      border: 1px solid #666;
+      border-radius: 10px;
+      font-size: clamp(14px, 2.5vw, 16px);
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .language-selector button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      transition: left 0.5s;
+    }
+
+    .language-selector button:hover {
+      background: linear-gradient(135deg, #555 0%, #666 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+
+    .language-selector button:hover::before {
+      left: 100%;
+    }
+
+    .language-selector button.selected {
+      background: linear-gradient(135deg, #8B4FFB 0%, #7B3FEB 100%);
+      color: #fff;
+      border-color: #7B3FEB;
+      box-shadow: 0 4px 8px rgba(139,79,251,0.3);
+    }
+
+    .language-selector button.selected::before {
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    }
+
+    .code-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 300px;
+      max-height: 400px;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    #output {
+      width: 100%;
+      height: 150px; /* Fixed height for the output */
+      padding: 10px;
+      font-family: "Courier New", monospace;
+      font-size: 16px;
+      border: 1px solid #555;
+      border-radius: 8px;
+      background-color: #444;
+      color: #fff;
+      overflow-y: auto; /* Enable vertical scrolling */
+      box-sizing: border-box;
+      margin-top: 10px;
+      position: relative; /* For positioning the expand icon */
+    }
+
+    /* CodeMirror Styling */
+    .CodeMirror {
+      width: 100%;
+      height: 100%;
+      border-radius: 8px;
+      font-family: "Courier New", monospace;
+      font-size: 16px;
+      background-color: #444;
+      color: #fff;
+      box-sizing: border-box; /* Include padding in height calculation */
+      overflow: auto; /* Enable scrolling */
+    }
+
+    .CodeMirror-gutters {
+      background-color: #444;
+      border-right: 1px solid #555;
+    }
+
+    .CodeMirror-linenumber {
+      color: #888;
+    }
+
+    .CodeMirror-scroll {
+      background-color: #444;
+    }
+
+    /* Expanded View Styles */
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .expanded-container {
+      width: 80%;
+      height: 80%;
+      background-color: rgba(51, 51, 51, 0.95);
+      border: 2px solid #FDB927;
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      box-sizing: border-box;
+    }
+
+    .expanded-container h3 {
+      margin: 0;
+      font-size: 24px;
+      color: #FDB927;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+    }
+
+    .expanded-container textarea {
+      width: 100%;
+      height: 100%;
+      padding: 10px;
+      font-size: 18px;
+      border: 1px solid #555;
+      border-radius: 8px;
+      resize: none;
+      box-sizing: border-box;
+      background-color: #444;
+      color: #fff;
+    }
+
+    .expanded-container .CodeMirror {
+      width: 100%;
+      height: 100%;
+      border-radius: 8px;
+      font-family: "Courier New", monospace;
+      font-size: 18px;
+      background-color: #444;
+      color: #fff;
+      box-sizing: border-box;
+    }
+
+    .expanded-container #output {
+      width: 100%;
+      height: 150px;
+      padding: 10px;
+      font-family: "Courier New", monospace;
+      font-size: 18px;
+      border: 1px solid #555;
+      border-radius: 8px;
+      background-color: #444;
+      color: #fff;
+      overflow-y: auto;
+      box-sizing: border-box;
+      margin-top: 10px;
+    }
+
+    .close-button {
+      padding: 10px 15px;
+      background-color: #FDB927;
+      color: #1a1a1a;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      font-family: 'Inter', sans-serif;
+      align-self: flex-end;
+    }
+
+    .close-button:hover {
+      background-color: #e6b800;
+      transform: translateY(-2px);
+    }
+
+    /* Expand Icon Styles */
+    .expand-icon {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      cursor: pointer;
+      color: #ccc;
+      font-size: 20px;
+      transition: color 0.3s ease;
+    }
+
+    .expand-icon:hover {
+      color: #fff;
+    }
+
+    /* Run Code Button Positioning */
+    #run-code {
+      position: absolute;
+      top: 10px;
+      right: 50px; /* Positioned to the left of the expand icon */
+      z-index: 1; /* Ensure it's above other elements */
+    }
+
+    /* Generate Question Button Positioning */
+    .question-button {
+      position: absolute;
+      top: 10px;
+      right: 50px; /* Positioned to the left of the expand icon */
+      z-index: 1; /* Ensure it's above other elements */
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Left Section: LeBron Image and Feedback Box -->
+    <div class="left-section">
+      <h1>LeInterview</h1>
+      <img id="lebron-picture" th:src="@{/Welcome.png}" alt="LeBron James">
+      <!-- Video Element -->
+      <video id="videoElement" class="videoElement" autoplay></video>
+      <div class="feedback-box">
+        <i class="fas fa-expand expand-icon" onclick="expandFeedbackBox()"></i>
+        <div class="text-section">
+          <h3>Feedback</h3>
+          <div id="feedback-text">
+            <p style="color: #888; font-style: italic; margin: 0;">Click "Activate Feedback" to start receiving AI feedback...</p>
+          </div>
+          <div class="button-group">
+            <span class="toggle-label">Toggle Camera</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="lebron-toggle" checked>
+              <span class="slider"></span>
+            </label>
+            <button class="feedback-button" onclick="activateFeedback()">Activate Feedback</button>
+            <a th:href="@{/}">
+              <button class="feedback-button return-home-button">Return Home</button>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Right Section: Question Box and Code Editor -->
+    <div class="right-section">
+      <!-- Question Box -->
+      <div class="question-box">
+        <button class="feedback-button question-button" onclick="fetchInterviewQuestion()">Generate question</button>
+        <i class="fas fa-expand expand-icon" onclick="expandQuestionBox()"></i>
+        <h3>Question</h3>
+        <div id="question-text">
+          <p style="color: #888; font-style: italic; margin: 0;">Click "Generate question" to load a coding problem...</p>
+        </div>
+      </div>
+      <!-- Code Editor -->
+      <div class="code-block">
+        <button id="run-code" class="feedback-button">Run Code</button>
+        <i class="fas fa-expand expand-icon" onclick="expandCodeBlock()"></i>
+        <h3>Code Space</h3>
+        <div class="language-selector">
+          <button class="java-button">Java</button>
+          <button class="c++button">C++</button>
+          <button class="python-button selected">Python</button>
+        </div>
+        <div class="code-container">
+          <!-- CodeMirror Editor -->
+          <textarea id="codeEditor"></textarea>
+        </div>
+        <div id="output">
+          <i class="fas fa-expand expand-icon" onclick="expandOutput()"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Expanded View Overlay -->
+  <div class="overlay" id="overlay">
+    <div class="expanded-container" id="expanded-container">
+      <button class="close-button" onclick="closeExpandedView()">Close</button>
+      <h3 id="expanded-title"></h3>
+      <textarea id="expanded-textarea" readonly></textarea>
+      <div id="expanded-code"></div>
+      <div id="expanded-output"></div>
+    </div>
+  </div>
+
+  <!-- Add CodeMirror and its dependencies -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.0/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.0/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.0/mode/clike/clike.min.js"></script>
+  <script>
+    const pictures = {
+      '0': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAx7vYppHG3mDv761hZ7Hn59uGs_JEvPovIk8KEDrdDCnwE35MvIhD8fJ892OWzbkamlQ&usqp=CAU',
+      '1': 'https://i.insider.com/5c000abbdde8676422780723?width=800&format=jpeg&auto=webp',
+      '2': 'https://content.api.news/v3/images/bin/c7373120e827e8fa56d1beb177f4fdee',
+      '3': 'https://thespun.com/.image/ar_1:1%2Cc_fill%2Ccs_srgb%2Cfl_progressive%2Cq_auto:good%2Cw_1200/MTgzMTI4MTg5NTc2NTUzODI0/los-angeles-lakers-v-golden-state-warriors.jpg',
+      '4': 'https://i.pinimg.com/originals/fa/f4/0a/faf40afb241d94b7375bf75ea0d26268.jpg',
+      '5': 'https://i.imgflip.com/mwhox.jpg',
+      '6': 'https://cdn.vox-cdn.com/thumbor/jZ8sKeNf5uGO3nN2nzrnNr5yNQQ=/0x40:960x680/1200x800/filters:focal(0x40:960x680)/cdn.vox-cdn.com/uploads/chorus_image/image/10416343/lebronnn.0.jpg',
+      '7': 'https://hoopshype.com/wp-content/uploads/sites/92/2021/10/i_33_e4_43_lebron-james.png',
+      '8': 'https://cdn.chatsports.com/cache/eb/0f/eb0f3a1d9bf483c012a6be10acbd6bb5-original.jpg',
+      '9': 'https://b.thumbs.redditmedia.com/hLCyjXo_FrWZVmuV5jCHKFrqGMEzE4MpQS13t6_5tps.jpg'
+    };
+
+    // Starter code templates for each language
+    const starterCode = {
+      python: `# Write your Python solution here
+def solution():
+    """
+    Implement your solution
+    """
+    pass
+
+# Test your code
+result = solution()
+print(result)`,
+      
+      java: `// Write your Java solution here
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Solution sol = new Solution();
+        // Test your code here
+        System.out.println(sol.solution());
+    }
+}
+
+class Solution {
+    public String solution() {
+        // Implement your solution
+        return "Hello World";
+    }
+}`,
+      
+      cpp: `// Write your C++ solution here
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+class Solution {
+public:
+    string solution() {
+        // Implement your solution
+        return "Hello World";
+    }
+};
+
+int main() {
+    Solution sol;
+    cout << sol.solution() << endl;
+    return 0;
+}`
+    };
+
+    // Initialize CodeMirror
+    const codeEditor = CodeMirror.fromTextArea(document.getElementById('codeEditor'), {
+      lineNumbers: true,
+      theme: 'dracula',
+      mode: 'python', // Default mode
+      value: starterCode.python,
+    });
+    
+    // Set up initial state when CodeMirror is ready
+    setTimeout(() => {
+      // Set starter code for Python
+      codeEditor.setValue(starterCode.python);
+      
+      // Ensure Python button is selected
+      const pythonButton = document.querySelector('.python-button');
+      if (pythonButton) {
+        pythonButton.classList.add('selected');
+      }
+    }, 100);
+
+    // Language selector functionality
+    const languageButtons = document.querySelectorAll('.language-selector button');
+    languageButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        // Remove the 'selected' class from all buttons
+        languageButtons.forEach(btn => btn.classList.remove('selected'));
+        
+        // Add the 'selected' class to the clicked button
+        button.classList.add('selected');
+        
+        // Change CodeMirror mode and starter code based on selected language
+        if (button.classList.contains('java-button')) {
+          codeEditor.setOption('mode', 'text/x-java');
+          codeEditor.setValue(starterCode.java);
+        } else if (button.classList.contains('c++button')) {
+          codeEditor.setOption('mode', 'text/x-c++src');
+          codeEditor.setValue(starterCode.cpp);
+        } else if (button.classList.contains('python-button')) {
+          codeEditor.setOption('mode', 'python');
+          codeEditor.setValue(starterCode.python);
+        }
+        
+        // Clear output when switching languages
+        document.getElementById('output').textContent = '';
+      });
+    });
+
+    // Run code functionality
+    document.getElementById('run-code').addEventListener('click', () => {
+      const code = codeEditor.getValue();
+      const outputDiv = document.getElementById('output');
+      outputDiv.textContent = 'Running...';
+
+      // Determine the current language
+      let language = 'python'; // default
+      const selectedButton = document.querySelector('.language-selector button.selected');
+      if (selectedButton) {
+        if (selectedButton.classList.contains('java-button')) {
+          language = 'java';
+        } else if (selectedButton.classList.contains('c++button')) {
+          language = 'c++';
+        } else if (selectedButton.classList.contains('python-button')) {
+          language = 'python';
+        }
+      }
+
+      // Send the code to the Flask backend
+      fetch('/execute', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code: code, language: language }),
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.output) {
+            outputDiv.textContent = data.output;
+          } else {
+            outputDiv.textContent = 'Error: No output received';
+          }
+        })
+        .catch(error => {
+          outputDiv.textContent = `Error: ${error.message}`;
+        });
+    });
+
+    // Toggle LeBron image and video visibility
+    const lebronToggle = document.getElementById('lebron-toggle');
+    const lebronPicture = document.getElementById('lebron-picture');
+    const videoElement = document.getElementById('videoElement');
+
+    lebronToggle.addEventListener('change', () => {
+      if (lebronToggle.checked) {
+        lebronPicture.style.display = 'block'; // Show LeBron
+        videoElement.style.display = 'none'; // Hide video
+      } else {
+        lebronPicture.style.display = 'none'; // Hide LeBron
+        videoElement.style.display = 'block'; // Show video
+      }
+    });
+
+    // Initialize video stream
+    if (navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(function (stream) {
+          videoElement.srcObject = stream;
+        })
+        .catch(function (error) {
+          console.log("Error accessing the camera: ", error);
+        });
+    } else {
+      console.log("getUserMedia not supported");
+    }
+
+    // Return Home button functionality
+    const returnHomeButton = document.querySelector('.return-home-button');
+    returnHomeButton.addEventListener('click', () => {
+      window.location.href = '/'; // Replace with your home page URL
+    });
+
+
+    
+    // Feedback updates
+    let updateInterval;
+    let rating;
+
+
+   
+    
+    // Expand functionality
+    const overlay = document.getElementById('overlay');
+    const expandedContainer = document.getElementById('expanded-container');
+    const expandedTitle = document.getElementById('expanded-title');
+    const expandedTextarea = document.getElementById('expanded-textarea');
+    const expandedCode = document.getElementById('expanded-code');
+    const expandedOutput = document.getElementById('expanded-output');
+
+    function expandFeedbackBox() {
+      expandedTitle.textContent = 'Feedback';
+      expandedTextarea.style.display = 'none';
+      expandedCode.style.display = 'block';
+      expandedOutput.style.display = 'none';
+      
+      // Copy the HTML content from feedback-text to expanded view
+      const feedbackContent = document.getElementById('feedback-text').innerHTML;
+      expandedCode.innerHTML = `<div style="background-color: #444; color: #fff; padding: 20px; border-radius: 8px; line-height: 1.5; overflow-y: auto; height: 100%;">${feedbackContent}</div>`;
+      
+      overlay.style.display = 'flex';
+    }
+
+    function expandQuestionBox() {
+      expandedTitle.textContent = 'Question';
+      expandedTextarea.style.display = 'none';
+      expandedCode.style.display = 'block';
+      expandedOutput.style.display = 'none';
+      
+      // Copy the HTML content from question-text to expanded view
+      const questionContent = document.getElementById('question-text').innerHTML;
+      expandedCode.innerHTML = `<div style="background-color: #444; color: #fff; padding: 20px; border-radius: 8px; line-height: 1.5; overflow-y: auto; height: 100%;">${questionContent}</div>`;
+      
+      overlay.style.display = 'flex';
+    }
+
+    function expandCodeBlock() {
+      expandedTitle.textContent = 'Code Space';
+      expandedTextarea.style.display = 'none';
+      expandedCode.style.display = 'block';
+      expandedOutput.style.display = 'block';
+      expandedCode.innerHTML = '';
+      const codeMirrorInstance = CodeMirror(expandedCode, {
+        lineNumbers: true,
+        theme: 'dracula',
+        mode: codeEditor.getOption('mode'),
+        value: codeEditor.getValue(),
+        readOnly: true,
+      });
+      expandedOutput.textContent = document.getElementById('output').textContent;
+      overlay.style.display = 'flex';
+    }
+
+    function expandOutput() {
+      expandedTitle.textContent = 'Output';
+      expandedTextarea.style.display = 'none';
+      expandedCode.style.display = 'none';
+      expandedOutput.style.display = 'block';
+      expandedOutput.textContent = document.getElementById('output').textContent;
+      overlay.style.display = 'flex';
+    }
+
+    function closeExpandedView() {
+      overlay.style.display = 'none';
+    }
+  </script>
+
+<script>
+  // Retrieve the variable from localStorage
+  let company = localStorage.getItem('companyName');
+
+  // Fetch interview question
+  async function fetchInterviewQuestion() {
+    try {
+      const response = await fetch(`/random-quest/${company}`);
+      const data = await response.json();
+
+      if (data && data.return_question) {
+        // Parse markdown and render as HTML
+        const questionElement = document.getElementById("question-text");
+        const htmlContent = marked.parse(data.return_question);
+        questionElement.innerHTML = htmlContent;
+      } else {
+        document.getElementById("question-text").innerHTML = '<p style="color: #888;">No question available.</p>';
+      }
+    } catch (error) {
+      console.error('Error fetching interview question', error);
+      document.getElementById("question-text").innerHTML = '<p style="color: #f44336;">Error loading question. Please try again.</p>';
+    }
+  }
+</script>
+
+<script>
+  //___________________FEEDBACK UPDATES___________________________
+  let text;
+
+  // Function to activate feedback
+  async function activateFeedback() {
+    console.log("Activate Feedback button clicked"); // Debugging
+
+    try {
+      const startResponse = await fetch('/start-interview', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      console.log("Start interview response:", startResponse); // Debugging
+
+      if (!startResponse.ok) {
+        throw new Error('Failed to start interview');
+      }
+
+      const startData = await startResponse.json();
+      console.log("Interview started:", startData.message); // Debugging
+
+      startFeedbackUpdates();
+    } catch (error) {
+      console.error('Error activating feedback:', error);
+      alert('Failed to activate feedback. Please check the console for details.');
+    }
+  }
+
+  // Function to fetch feedback from the backend
+  async function fetchFeedback() {
+    try {
+      const response = await fetch('/get-feedback');
+      const data = await response.json();
+
+      if (data.feedback) {
+        const rating = data.feedback[0]; // Extract the rating from the feedback
+        console.log(rating);
+        console.log(data.feedback.slice(4));
+
+        // Update feedback text with markdown rendering
+        const feedbackElement = document.getElementById('feedback-text');
+        const feedbackText = data.feedback.slice(4) || "No feedback yet.";
+        const htmlContent = marked.parse(feedbackText);
+        feedbackElement.innerHTML = htmlContent;
+
+        // Update LeBron picture based on rating
+        const lebronPicture = document.getElementById('lebron-picture');
+        lebronPicture.src = pictures[`${String(rating)}`];
+      } else {
+        document.getElementById('feedback-text').innerHTML = '<p style="color: #888;">No feedback yet.</p>';
+      }
+    } catch (error) {
+      console.error('Error fetching feedback:', error);
+    }
+  }
+
+  // Function to start polling for feedback updates
+  function startFeedbackUpdates() {
+    if (updateInterval) {
+      clearInterval(updateInterval); // Stop previous interval if any
+    }
+    fetchFeedback(); // Fetch feedback immediately
+    updateInterval = setInterval(fetchFeedback, 5000); // Fetch feedback every 5 seconds
+  }
+</script>
+
+</body>
+</html>

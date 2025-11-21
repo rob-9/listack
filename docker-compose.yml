@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  leinterview:
+    build: .
+    container_name: leinterview-java
+    ports:
+      - "5000:5000"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-demo}
+      - DEMO_MODE=${DEMO_MODE:-true}
+      - AUDIO_ENABLED=false
+      - USE_KUBERNETES=false
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
